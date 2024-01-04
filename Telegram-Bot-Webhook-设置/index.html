@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="自带 updater.start_webhook(listen&#x3D;’35.200.88.135’, port&#x3D;443, url_path&#x3D;’437433569:AAHJoviAQoiz_WEmDhnme3Jz6eYR1sSRIik’, key&#x3D;’&#x2F;etc&#x2F;letsencrypt&#x2F;live&#x2F;akarat.site&#x2F;privkey.pem’, cert&#x3D;’&#x2F;etc&#x2F;letsencrypt&#x2F;live&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Telegram Bot Webhook 设置">
+<meta property="og:url" content="https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/index.html">
+<meta property="og:site_name" content="Tristram">
+<meta property="og:description" content="自带 updater.start_webhook(listen&#x3D;’35.200.88.135’, port&#x3D;443, url_path&#x3D;’437433569:AAHJoviAQoiz_WEmDhnme3Jz6eYR1sSRIik’, key&#x3D;’&#x2F;etc&#x2F;letsencrypt&#x2F;live&#x2F;akarat.site&#x2F;privkey.pem’, cert&#x3D;’&#x2F;etc&#x2F;letsencrypt&#x2F;live&#x2F;">
+<meta property="og:locale">
+<meta property="article:published_time" content="2017-10-11T13:15:50.000Z">
+<meta property="article:modified_time" content="2024-01-03T07:46:13.916Z">
+<meta property="article:author" content="Akarat">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon-192x192.png">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Telegram Bot Webhook 设置</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- <link rel="stylesheet" href="/var/www/myblog/public/css/style.css"> -->
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://linux.akarat.xyz">Newsletter</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://thoughts.akarat.xyz">Thoughts</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/laravel-%E5%87%A0%E7%A7%8D%E6%89%B9%E9%87%8F%E8%B7%91%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E6%B3%95/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/&text=Telegram Bot Webhook 设置"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/&title=Telegram Bot Webhook 设置"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/&is_video=false&description=Telegram Bot Webhook 设置"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Telegram Bot Webhook 设置&body=Check out this article: https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/&title=Telegram Bot Webhook 设置"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/&title=Telegram Bot Webhook 设置"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/&title=Telegram Bot Webhook 设置"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/&title=Telegram Bot Webhook 设置"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/&name=Telegram Bot Webhook 设置&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Telegram Bot Webhook 设置
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Tristram</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-10-11T13:15:50.000Z" itemprop="datePublished">2017-10-11</time>
+    </div>
+
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <ul>
+<li>
+<p>自带<br>
+updater.start_webhook(listen=’35.200.88.135’, port=443, url_path=’437433569:AAHJoviAQoiz_WEmDhnme3Jz6eYR1sSRIik’, key=’/etc/letsencrypt/live/akarat.site/privkey.pem’, cert=’/etc/letsencrypt/live/akarat.site/cert.pem’, webhook_url=’<a target="_blank" rel="noopener" href="https://akarat.site:443/437433569:AAHJoviAQoiz_WEmDhnme3Jz6eYR1sSRIik'">https://akarat.site:443/437433569:AAHJoviAQoiz_WEmDhnme3Jz6eYR1sSRIik’</a>)</p>
+</li>
+<li>
+<p>Nginx方法<br>
+updater.start_webhook(listen=’127.0.0.1’, port=5000, url_path=’437433569:AAHJoviAQoiz_WEmDhnme3Jz6eYR1sSRIik’)</p>
+</li>
+</ul>
+<p>updater.bot.set_webhook(webhook_url=’<a target="_blank" rel="noopener" href="https://akarat.site/437433569:AAHJoviAQoiz_WEmDhnme3Jz6eYR1sSRIik'">https://akarat.site/437433569:AAHJoviAQoiz_WEmDhnme3Jz6eYR1sSRIik’</a>, certificate=open(‘/etc/letsencrypt/live/akarat.site/cert.pem’, ‘rb’))</p>
+<p>来自 <a target="_blank" rel="noopener" href="https://github.com/python-telegram-bot/python-telegram-bot/wiki/Webhooks">https://github.com/python-telegram-bot/python-telegram-bot/wiki/Webhooks</a></p>
+<p>nginx中设置反向代理</p>
+<ul>
+<li>
+<p>初始化<br>
+from telegram.ext import Updater<br>
+updater = Updater(token=’437433569:AAHJoviAQoiz_WEmDhnme3Jz6eYR1sSRIik’)</p>
+</li>
+<li>
+<p>Webhook 方式<br>
+import telegram<br>
+bot = telegram.Bot(token=’437433569:AAHJoviAQoiz_WEmDhnme3Jz6eYR1sSRIik’)<br>
+bot.set_webhook(webhook_url=’<a target="_blank" rel="noopener" href="https://akarat.site/437433569:AAHJoviAQoiz_WEmDhnme3Jz6eYR1sSRIik'">https://akarat.site/437433569:AAHJoviAQoiz_WEmDhnme3Jz6eYR1sSRIik’</a>, certificate=open(‘/etc/letsencrypt/live/akarat.site/fullchain.pem’, ‘rb’))</p>
+</li>
+</ul>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://linux.akarat.xyz">Newsletter</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://thoughts.akarat.xyz">Thoughts</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/&text=Telegram Bot Webhook 设置"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/&title=Telegram Bot Webhook 设置"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/&is_video=false&description=Telegram Bot Webhook 设置"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Telegram Bot Webhook 设置&body=Check out this article: https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/&title=Telegram Bot Webhook 设置"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/&title=Telegram Bot Webhook 设置"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/&title=Telegram Bot Webhook 设置"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/&title=Telegram Bot Webhook 设置"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://akarat.xyz/Telegram-Bot-Webhook-%E8%AE%BE%E7%BD%AE/&name=Telegram Bot Webhook 设置&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2024 Akarat
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://linux.akarat.xyz">Newsletter</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://thoughts.akarat.xyz">Thoughts</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+
+
+<!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- Google Analytics -->
+
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-128594966-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+<!-- Disqus Comments -->
+
+

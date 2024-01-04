@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="最近 containerd 的维护者 Phil Estes 去了一档播客，讲了很多关于 containerd 和 OCI 的事情。机缘巧合听了这个节目，稍微总结性的记录一下。 历史 最早期，虚拟机，LXC 这些东西，是容器技术的曙光期不必赘述。Docker 横空出世，大约 2014-15年期间，Docker 是唯一知道怎么样正确把 Namespace 和 cgroup 打包起来的公司。但接下来他们">
+<meta property="og:type" content="article">
+<meta property="og:title" content="历史转折中的 containerd">
+<meta property="og:url" content="https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/index.html">
+<meta property="og:site_name" content="Tristram">
+<meta property="og:description" content="最近 containerd 的维护者 Phil Estes 去了一档播客，讲了很多关于 containerd 和 OCI 的事情。机缘巧合听了这个节目，稍微总结性的记录一下。 历史 最早期，虚拟机，LXC 这些东西，是容器技术的曙光期不必赘述。Docker 横空出世，大约 2014-15年期间，Docker 是唯一知道怎么样正确把 Namespace 和 cgroup 打包起来的公司。但接下来他们">
+<meta property="og:locale">
+<meta property="article:published_time" content="2020-11-09T13:15:50.000Z">
+<meta property="article:modified_time" content="2024-01-03T07:46:13.921Z">
+<meta property="article:author" content="Akarat">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon-192x192.png">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>历史转折中的 containerd</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- <link rel="stylesheet" href="/var/www/myblog/public/css/style.css"> -->
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://linux.akarat.xyz">Newsletter</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://thoughts.akarat.xyz">Thoughts</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/Linkerd-%E8%B5%A0%E9%80%81%E4%BA%86%E6%88%91%E4%BB%AC%E8%AE%B8%E5%A4%9A%E5%91%A8%E8%BE%B9/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="/prometheus-operator/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/&text=历史转折中的 containerd"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/&title=历史转折中的 containerd"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/&is_video=false&description=历史转折中的 containerd"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=历史转折中的 containerd&body=Check out this article: https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/&title=历史转折中的 containerd"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/&title=历史转折中的 containerd"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/&title=历史转折中的 containerd"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/&title=历史转折中的 containerd"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/&name=历史转折中的 containerd&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%86%E5%8F%B2"><span class="toc-number">1.</span> <span class="toc-text">历史</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#containerd-%E7%9A%84%E7%8E%B0%E7%8A%B6"><span class="toc-number">2.</span> <span class="toc-text">containerd 的现状</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OCI-%E7%9A%84%E7%8E%B0%E7%8A%B6"><span class="toc-number">3.</span> <span class="toc-text">OCI 的现状</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E5%9B%9E%E9%A1%BE"><span class="toc-number">4.</span> <span class="toc-text">简单回顾</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-%E8%B5%B0%E5%90%8E%E6%80%8E%E6%A0%B7"><span class="toc-number">5.</span> <span class="toc-text">Docker 走后怎样</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        历史转折中的 containerd
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Tristram</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2020-11-09T13:15:50.000Z" itemprop="datePublished">2020-11-09</time>
+    </div>
+
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>最近 containerd 的维护者 Phil Estes 去了一档播客，讲了很多关于 containerd 和 OCI 的事情。机缘巧合听了这个节目，稍微总结性的记录一下。</p>
+<h2 id="历史">历史</h2>
+<p>最早期，虚拟机，LXC 这些东西，是容器技术的曙光期不必赘述。Docker 横空出世，大约 2014-15年期间，Docker 是唯一知道怎么样正确把 Namespace 和 cgroup 打包起来的公司。但接下来他们的命运急转直下。大家对 Docker monopoly 的代码、层出不穷的 bug 以及对社区的漠不关心等等，产生很多抱怨。rkt 作为竞争者出现，然后好事的公司发起了「开放容器倡议」，即OCI.</p>
+<p>我们谈及 Docker 总是只关心容器，其实它也包括了很多连带的东西例如镜像的标准，镜像的构建，镜像仓库的定义等等。OCI 统一了这些. runC 直接去封装了容器技术本身，containerd 作为运行时去管理容器的生命周期。</p>
+<p>把 containerd 和 Docker 比较是不合适的。containerd 并不、也不打算去 build 镜像和管其他杂事，ctr 这个终端工具，也只是给运维人员测试用的。containerd 只是想专心做运行时的行业标准，上可以接 docker/k8s/openFaaS 等各种用户端产品，下可以接 runc，也可以是更轻量的crun，甚至 kata/firecraker 等超轻量虚拟机。CRI 只是 Kubernetes 自己的运行时接口，containerd 也直接支持了。</p>
+<p>回到这段历史，所有 containerd 不关心的事情，都直接交给 Docker/BuildKit. 而红帽阵营在这个混乱期，为了让事情变得更复杂，他们在 runc 上构建了 CRI-O 作为 docker 替代品专供 k8s. 而接下来又为了满足开发人员的使用需要，构建了 Podman/Buildah/Scopio. 几个月前又发布了超轻量的 crun 带替代 runc.</p>
+<h2 id="containerd-的现状">containerd 的现状</h2>
+<p>既然 containerd 是行业标准，那除了用于 Docker 和 k8s，还有什么呢？有的。例如要搞边缘计算的 k3s 就是直接基于 contianerd 的，它跳过了 docker，所以 512MB 内存就可运行。</p>
+<p>再有就是 OpenFaaS，在高性能机器上很好用。但是如果你只有一台 5刀一个月的小破 VPS，还是考虑一下 faasd 吧。直接基于 containerd, 它能跑在 1GB 内存的小机子上。</p>
+<p>除了这些，还有 containerd 的一些子项目。假如你要在自己笔记本拉个10GB 的镜像，你说好我时间多可以等。那假如几千台服务器，每台都拉同一个 10GB 镜像？大家都是一个网里的，都去重复请求 registry 不太好吧。containerd/stargz-snapshotter 就是来自 contianerd 的解决方案。</p>
+<h2 id="OCI-的现状">OCI 的现状</h2>
+<p>上面说道 OCI 提供了容器和镜像的标准之后，这个倡议就忽然失去了热度——反正标准定了，去做工具就行了。几年后的现在，容器的世界日趋成熟，但要考虑的并不是只有容器镜像，要管理的还有那么多 yaml/chart/乱七八糟。我们又开始需要统一更多的标准，所以 OCI 的关注度又回升了。各种资源的定义需要 opencontainers/artifacts. 而这些资源的分发又可以遵循 opencontainers/distribution-spec.</p>
+<h2 id="简单回顾">简单回顾</h2>
+<p>runC 是最底层封装，建立和运行容器，同一层面可以替换成 crun/runv 等高端科技；<br>
+你需要一个运行时去调度，就有了 containerd;<br>
+k8s 通过 CRI 来管各种运行时，支持的有 Docker/rkt/containerd/CRI-O;<br>
+本地开发/镜像构建，如果你是 Docker 派用 Docker/containerd/buildkit, 红帽派用 Podman/Buildah/Skopeo.</p>
+<h2 id="Docker-走后怎样">Docker 走后怎样</h2>
+<p>最近因为 Docker 被人们冷落多年以后，终于无力承受几十 PB 的镜像托管的服务器费用，修改了用户政策，要自动删除 6个月以上不活跃的镜像。破公司快倒了。</p>
+<p>红帽作为上游接下来要推 cgroup v2. CRI-O/Podman 等早已支持，而 Fedora 作为红帽最新科技的 testbed, 也默认使用 cgroup v2 了一年多。</p>
+<p>以后，你可以 alias podman=docker, 然后一切照旧。</p>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://linux.akarat.xyz">Newsletter</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://thoughts.akarat.xyz">Thoughts</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%86%E5%8F%B2"><span class="toc-number">1.</span> <span class="toc-text">历史</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#containerd-%E7%9A%84%E7%8E%B0%E7%8A%B6"><span class="toc-number">2.</span> <span class="toc-text">containerd 的现状</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OCI-%E7%9A%84%E7%8E%B0%E7%8A%B6"><span class="toc-number">3.</span> <span class="toc-text">OCI 的现状</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E5%9B%9E%E9%A1%BE"><span class="toc-number">4.</span> <span class="toc-text">简单回顾</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-%E8%B5%B0%E5%90%8E%E6%80%8E%E6%A0%B7"><span class="toc-number">5.</span> <span class="toc-text">Docker 走后怎样</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/&text=历史转折中的 containerd"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/&title=历史转折中的 containerd"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/&is_video=false&description=历史转折中的 containerd"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=历史转折中的 containerd&body=Check out this article: https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/&title=历史转折中的 containerd"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/&title=历史转折中的 containerd"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/&title=历史转折中的 containerd"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/&title=历史转折中的 containerd"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://akarat.xyz/%E5%8E%86%E5%8F%B2%E8%BD%AC%E6%8A%98%E4%B8%AD%E7%9A%84-containerd/&name=历史转折中的 containerd&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2024 Akarat
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://linux.akarat.xyz">Newsletter</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://thoughts.akarat.xyz">Thoughts</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+
+
+<!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- Google Analytics -->
+
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-128594966-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+<!-- Disqus Comments -->
+
+

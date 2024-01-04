@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="实现 GitOps 不是一蹴而就的。为公司项目实现 GitOps 前后彻底推翻了两次，大幅修改了很多次。当然没有完美的 Ops, 但现在处于一个相对符合 weaveworks 那位老师定义的样子，而且也符合我们的实际情况。我需要记录一下自己的心路历程，否则很容易对结果 take for granted. 首先说下使用前：项目是把配置放在 .env 文件里，k8s 的 yaml 也放在代码目录里。但">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ArgoCD 实现 GitOps 的感想">
+<meta property="og:url" content="https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/index.html">
+<meta property="og:site_name" content="Tristram">
+<meta property="og:description" content="实现 GitOps 不是一蹴而就的。为公司项目实现 GitOps 前后彻底推翻了两次，大幅修改了很多次。当然没有完美的 Ops, 但现在处于一个相对符合 weaveworks 那位老师定义的样子，而且也符合我们的实际情况。我需要记录一下自己的心路历程，否则很容易对结果 take for granted. 首先说下使用前：项目是把配置放在 .env 文件里，k8s 的 yaml 也放在代码目录里。但">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-01-15T12:13:08.000Z">
+<meta property="article:modified_time" content="2024-01-03T07:46:13.913Z">
+<meta property="article:author" content="Akarat">
+<meta property="article:tag" content="kubernetes CI&#x2F;CD argocd">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon-192x192.png">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>ArgoCD 实现 GitOps 的感想</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- <link rel="stylesheet" href="/var/www/myblog/public/css/style.css"> -->
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://linux.akarat.xyz">Newsletter</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://thoughts.akarat.xyz">Thoughts</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/%E5%8F%88%E7%BB%99%E5%BC%80%E6%BA%90%E7%A4%BE%E5%8C%BA%E6%B7%BB%E9%BA%BB%E7%83%A6%E4%BA%86/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="/Linkerd-%E8%B5%A0%E9%80%81%E4%BA%86%E6%88%91%E4%BB%AC%E8%AE%B8%E5%A4%9A%E5%91%A8%E8%BE%B9/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/&text=ArgoCD 实现 GitOps 的感想"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/&title=ArgoCD 实现 GitOps 的感想"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/&is_video=false&description=ArgoCD 实现 GitOps 的感想"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ArgoCD 实现 GitOps 的感想&body=Check out this article: https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/&title=ArgoCD 实现 GitOps 的感想"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/&title=ArgoCD 实现 GitOps 的感想"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/&title=ArgoCD 实现 GitOps 的感想"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/&title=ArgoCD 实现 GitOps 的感想"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/&name=ArgoCD 实现 GitOps 的感想&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        ArgoCD 实现 GitOps 的感想
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Tristram</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2021-01-15T12:13:08.000Z" itemprop="datePublished">2021-01-15</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/kubernetes-CI-CD-argocd/" rel="tag">kubernetes CI/CD argocd</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>实现 GitOps 不是一蹴而就的。为公司项目实现 GitOps 前后彻底推翻了两次，大幅修改了很多次。当然没有完美的 Ops, 但现在处于一个相对符合 weaveworks 那位老师定义的样子，而且也符合我们的实际情况。我需要记录一下自己的心路历程，否则很容易对结果 take for granted.</p>
+<p>首先说下使用前：项目是把配置放在 .env 文件里，k8s 的 yaml 也放在代码目录里。但这个 yaml 却不是最终部署，而是里面有很多占位字符串等到 ci 流水线的最后一步替换掉，再 apply 到集群上。</p>
+<p>困扰有很多：每个项目的 ci 都要独立修改，大动的时候例如加服务网格 sidecar、升级 api version 或者加 hpa 之类的操作，都需要到各个项目去动，各自提交。很麻烦而且长期下来配置各不相同。然后开发者并不知道代码目录里看到的这些是什么。凡此种种。而 GitOps 的好处之多，我就不赘述了。</p>
+<p>第一个疗程：首先原本的 ci 文件里有一长串复杂但却久经考验的部署 bash 脚本. 我知道我不能一上来就大动干戈，所以我只是把最后 kubectl apply 那一步改为一个 git 提交。很好。但我一上来就非常执着于中心化配置，我想要在一个我能控制的仓库里把 yaml 在提交前「截」下来,把自己的配置 kustomize patch 上去。于是我另建了一个仓库，在提交前拉下来，把我的配置 kustomize 上去.但最终的提交到哪里呢？我觉得既然我有「截断」措施，各个项目的 yaml 还是在各自仓库里不容易冲突，于是参照网上的做法在 ci 的最后一步提交给自己。为了防止循环提交，在提交时带上 [skip ci].</p>
+<p>上面这几个考虑事实证明大错特错。</p>
+<ol>
+<li>配置非但还是没有分离，而且原先为了保密把一些敏感配置提取到 gitlab 变量里，结果现在又被作为最终注入的 secret yaml 提交回了代码仓库；</li>
+<li>我这个截断行为等于给使用者增加了一个不透明而且碎片化的一层，部署之后业务开发向我抱怨他不知道数据库在哪配的，因为现在等于有了 3 个地方，而且出现了重复配置，他不知道优先级是怎样的；</li>
+<li>我的截断等于需要流水线主动拉取，接下来即便我做了中心化的修改，也需要各个仓库执行最后一步流水线才能生效；</li>
+<li>最后是提交到自己仓库——虽然你能看到有这么做的，但是千万别，因为 skip ci 标记会在流水线页面莫名其妙多一个被跳过的记录，而且开发人员如果没有在自己提交前拉下最新的代码直接提交，会产生一个 merge, 稍不注意 git 的 merge 提交记录里会带上这个标记，导致开发人员提交无法触发流水线。</li>
+</ol>
+<p>第二个疗程：这一步我当然是要导出所有配置，所有的微服务的 yaml，最终提交都到同一个项目级仓库。事实证明，做 gitops 当然要相信 git 的机制。各自项目提交到各自的文件夹，怎么可能冲突。去除了我的所谓中心化配置，所有配置都在最终 gitops 仓库里，也大幅精简了复杂度，而且这个配置可以提交即生效。</p>
+<p>解决了大多数问题，但还有一些棘手的地方。</p>
+<ol>
+<li>最大的问题是每次生成的 yaml 还是通过各自仓库里的模板字符串替换得到的；</li>
+<li>每次进行改动虽然只需要一个仓库提交，但需要进行大量文件的修改，总是要写很多脚本，也容易出错；</li>
+<li>gitops 的仓库在项目里，提交的 secret 相当于大家还是能看到。</li>
+</ol>
+<p>最终的方案删除了各个项目里的所谓模板，把一个真正的模板放在了 gitops 仓库一个单独的文件里，然后 ci 只在每个冷启动的项目复制一份模板新建 yaml，而之后每次 build 完镜像，只需要 Bump 镜像版本。真正做到了「开发人员只交付镜像」.</p>
+<p>其次就是 secret 的问题。现阶段大多数的建议是使用 mozilla sops 或者 hashicorp vault 来实现 sealed secret. 我本想试用 sops, 但发现 sops 真的只能使用 Amazon/Azure/GCP 的密钥环服务，并不能使用国内云厂商的类似服务。另一方面我们只是个小团队，一次性加入太多复杂度，很容易造成全公司里只有我知道这东西怎么用的状况。最终我的方案是直接把 gitops 的仓库单独迁到一个项目管理员的 gitlab 组下面。现在就可以邀请项目的管理人员进组看到具体的 secret. 这样做还有一个好处，即 ArgoCD 的 dex 调用 GitLab 的 sso 时，可以读取用户所在的组。这样我就可以通过用户在不在 gitops 组里去管理 ArgoCD 内的操作权限，一箭双雕。</p>
+<p>最后是配置的问题，果然还是 kustomize 比较合适。可以实现层级关系来把通用的配置放在一个层级管理。helm 的问题不是今天的话题不多说了，如果你很喜欢 helm 我不反对，但你应该能注意到，类似 promethues-operator/linkerd2/ECK/Jaeger/cert-manager 等等等等这些大项目都没有把 helm 作为首选的安装方式，这是非常能说明问题的。<br>
+但是 kustomize 也有它的问题：最麻烦的是版本间的区别过于复杂。我本来以为 kubectl 自带的就可以，没想到这个版本差异太大。我本来下载了最新版本，没想到又与 argocd 带的版本有些操作不相兼容。最后不得不打包了一个 kustomize 和 git 的镜像来作为最后的上线一步。但是你应该可以注意到，把 kustomize 放进 kubectl 是一种明显的承认它亲儿子地位的行为。而版本问题都是时间可以解决的。</p>
+<p>又跑题了，但大概就是这些，作为以后的备忘。如果想到什么再来补充吧。</p>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://linux.akarat.xyz">Newsletter</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://thoughts.akarat.xyz">Thoughts</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/&text=ArgoCD 实现 GitOps 的感想"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/&title=ArgoCD 实现 GitOps 的感想"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/&is_video=false&description=ArgoCD 实现 GitOps 的感想"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ArgoCD 实现 GitOps 的感想&body=Check out this article: https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/&title=ArgoCD 实现 GitOps 的感想"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/&title=ArgoCD 实现 GitOps 的感想"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/&title=ArgoCD 实现 GitOps 的感想"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/&title=ArgoCD 实现 GitOps 的感想"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://akarat.xyz/ArgoCD-%E5%AE%9E%E7%8E%B0-GitOps-%E7%9A%84%E6%84%9F%E6%83%B3/&name=ArgoCD 实现 GitOps 的感想&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2024 Akarat
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://linux.akarat.xyz">Newsletter</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://thoughts.akarat.xyz">Thoughts</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+
+
+<!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- Google Analytics -->
+
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-128594966-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+<!-- Disqus Comments -->
+
+

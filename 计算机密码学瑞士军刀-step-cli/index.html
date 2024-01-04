@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="step-cli 是一个几乎全功能的密码学终端。通常说起这类工具我们第一反应是 openssl 或 cloudflare 出品的 cfssl. 但 smallstep 出品的 step-cli 有很多额外的好处。最近体验了一下，还是非常推荐的。 优点 人性化 我最常用的一个功能是 step ceritificate inspect https:&#x2F;&#x2F;xxx.com 直接查看我管理的网站的证书过期时间">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机密码学瑞士军刀 step-cli">
+<meta property="og:url" content="https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/index.html">
+<meta property="og:site_name" content="Tristram">
+<meta property="og:description" content="step-cli 是一个几乎全功能的密码学终端。通常说起这类工具我们第一反应是 openssl 或 cloudflare 出品的 cfssl. 但 smallstep 出品的 step-cli 有很多额外的好处。最近体验了一下，还是非常推荐的。 优点 人性化 我最常用的一个功能是 step ceritificate inspect https:&#x2F;&#x2F;xxx.com 直接查看我管理的网站的证书过期时间">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-10-09T05:45:59.000Z">
+<meta property="article:modified_time" content="2024-01-03T07:46:13.929Z">
+<meta property="article:author" content="Akarat">
+<meta property="article:tag" content="加密">
+<meta property="article:tag" content="cli">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon-192x192.png">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>计算机密码学瑞士军刀 step-cli</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- <link rel="stylesheet" href="/var/www/myblog/public/css/style.css"> -->
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://linux.akarat.xyz">Newsletter</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://thoughts.akarat.xyz">Thoughts</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/steam-deck-transparent-proxy/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="/How-to-mock-Kubernetes-the-hard-way-with-local-vms/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/&text=计算机密码学瑞士军刀 step-cli"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/&title=计算机密码学瑞士军刀 step-cli"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/&is_video=false&description=计算机密码学瑞士军刀 step-cli"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=计算机密码学瑞士军刀 step-cli&body=Check out this article: https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/&title=计算机密码学瑞士军刀 step-cli"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/&title=计算机密码学瑞士军刀 step-cli"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/&title=计算机密码学瑞士军刀 step-cli"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/&title=计算机密码学瑞士军刀 step-cli"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/&name=计算机密码学瑞士军刀 step-cli&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">1.</span> <span class="toc-text">优点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%BA%E6%80%A7%E5%8C%96"><span class="toc-number">1.1.</span> <span class="toc-text">人性化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD%E5%85%A8"><span class="toc-number">1.2.</span> <span class="toc-text">功能全</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E5%85%A8"><span class="toc-number">1.3.</span> <span class="toc-text">安全</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">2.</span> <span class="toc-text">缺点</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        计算机密码学瑞士军刀 step-cli
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Tristram</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2021-10-09T05:45:59.000Z" itemprop="datePublished">2021-10-09</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/cli/" rel="tag">cli</a>, <a class="tag-link-link" href="/tags/%E5%8A%A0%E5%AF%86/" rel="tag">加密</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p><code>step-cli</code> 是一个几乎全功能的密码学终端。通常说起这类工具我们第一反应是 <code>openssl</code> 或 cloudflare 出品的 <code>cfssl</code>. 但 smallstep 出品的 <code>step-cli</code> 有很多额外的好处。最近体验了一下，还是非常推荐的。</p>
+<h3 id="优点">优点</h3>
+<h4 id="人性化">人性化</h4>
+<p>我最常用的一个功能是 <code>step ceritificate inspect https://xxx.com</code> 直接查看我管理的网站的证书过期时间。直接通过 url 就能看到人性化展示的证书内容，<code>--short</code> 可以简便看到过期时间。openssl 虽然有 <code>openssl s_client -connect 1.2.3.4:443 -showcerts &lt; /dev/null</code>，但显示的结果远没有 step 那么友好，命令也不是很便捷。</p>
+<p>生成证书，生成和签名 CSR 等也十分方便。语法也比较平易近人。openssl 也能摸清它的规律，但往往用起来容易让人不知所措，例如第一次用的人容易不确定应该 <code>rsa</code>, <code>genrsa</code> 还是 <code>rsautl</code>; 证书的功能分布在 <code>ca</code> <code>asn1parse</code> <code>x509</code>, 以及我自己也分不清 <code>pkcs7</code>, <code>pkcs8</code>, <code>pkcs12</code>. 但在 step 中所有涉及证书的工具都被 <code>step certificate</code> 解决了。</p>
+<p>最人性化的地方是它的 help 信息十分全面详尽，大多数情况下都有安全使用的范例，你只通过终端就能知道各种命令的用法。所以本文就算想要介绍用法也只不过是拷贝文档中的例子而已。</p>
+<h4 id="功能全">功能全</h4>
+<p>它除了 openssl 中那些基础的工具，还囊括了 JOSE (JWT/JWE/JWS/JWK), 还有 NACL/OTP/OAUTH/OIDC, 甚至能够运行自己的 PKI, 还能方便通过证书统一管理主机的 SSH 认证。应有尽有。</p>
+<p><code>step crypto jwt inspect</code> 可以直接检查 jwt 的内容, 与其他命令组合例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get secret default-token-abcde -o jsonpath=&#x27;&#123;.data.token&#125;&#x27; | base64 -d | step crypto jwt inspect --insecure</span><br></pre></td></tr></table></figure>
+<p>即可获得 jwt 的 json 内容。本地有 key 还可以 <code>step crypto jwt verify</code> 可以检查 jwt 签名。其他 JWK/JWE/JWS 功能不一一列举。</p>
+<p>还有 <code>step crypto hash</code> 生成和比较摘要，<code>step crypto otp</code> 生成一次性密码，等等。</p>
+<h4 id="安全">安全</h4>
+<p>step 的一大好处是为用户考量了安全性，所以所有不安全的操作都需要手动指定，甚至不允许。例如生成密钥对默认使用椭圆曲线而不是 RSA; 生成证书或密钥对时会默认要求提供密码；hash 的默认算法是 SHA-256；JWT 不允许任意指定 key 进行签名，而必须要使用 jws.</p>
+<p>step 最重要的理念在于，普通人即便懂得密码学的原理，也不应该自己过分涉及任何细节。它只暴露最终用户实际工作中需要的东西，算法只是在生成过程中指定的一个参数而已。所以小白也可以非常安全的使用, 一旦涉及不安全的内容都需要显式指定 <code>--insecure</code>.</p>
+<p>密码学是一个完全不同的学科。任何专家都乐于告诉你原理，但他们永远会建议你，遵循最佳实践，不要自己实现现有的工具。普通人遑论实现加密，即便是安全的使用现有的密码学工具都非常困难。很多能力很强的工程师都会在这个问题上犯错误<a target="_blank" rel="noopener" href="https://twitter.com/Blankwonder/status/1471339829489070084">1</a><a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-org/issues/64#issuecomment-292788339">2</a>。</p>
+<h3 id="缺点">缺点</h3>
+<p>在使用中优点有时也会变成缺点。比如 step 默认生成密钥对的 key 是密码加密的，很多地方不支持；比如不允许任意指定 JWS 签名用的 key。因为安全限制了很多使用场景。</p>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://linux.akarat.xyz">Newsletter</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://thoughts.akarat.xyz">Thoughts</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">1.</span> <span class="toc-text">优点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%BA%E6%80%A7%E5%8C%96"><span class="toc-number">1.1.</span> <span class="toc-text">人性化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD%E5%85%A8"><span class="toc-number">1.2.</span> <span class="toc-text">功能全</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E5%85%A8"><span class="toc-number">1.3.</span> <span class="toc-text">安全</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">2.</span> <span class="toc-text">缺点</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/&text=计算机密码学瑞士军刀 step-cli"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/&title=计算机密码学瑞士军刀 step-cli"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/&is_video=false&description=计算机密码学瑞士军刀 step-cli"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=计算机密码学瑞士军刀 step-cli&body=Check out this article: https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/&title=计算机密码学瑞士军刀 step-cli"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/&title=计算机密码学瑞士军刀 step-cli"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/&title=计算机密码学瑞士军刀 step-cli"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/&title=计算机密码学瑞士军刀 step-cli"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://akarat.xyz/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%86%E7%A0%81%E5%AD%A6%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80-step-cli/&name=计算机密码学瑞士军刀 step-cli&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2024 Akarat
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://linux.akarat.xyz">Newsletter</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://thoughts.akarat.xyz">Thoughts</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+
+
+<!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- Google Analytics -->
+
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-128594966-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+<!-- Disqus Comments -->
+
+

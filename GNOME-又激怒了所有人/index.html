@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="背景 如果你以前关注 Linux Desktop, 你可能知道 GNOME 早在几年前就联名公开信呼吁社区不要搞主题. Gnome-Looks 上的那些好看的东西其实是从来不被承认的. 这个事情一直处于争论不休的状态, 但在最近变的更加紧张. 7 月份 GNOME 的一篇博客再次论述了 GNOME 的哲学. 这篇文章里有一些有争议的部分, 例如作者直言全局主题就是一个 “broken idea”,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GNOME 又激怒了所有人">
+<meta property="og:url" content="https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/index.html">
+<meta property="og:site_name" content="Tristram">
+<meta property="og:description" content="背景 如果你以前关注 Linux Desktop, 你可能知道 GNOME 早在几年前就联名公开信呼吁社区不要搞主题. Gnome-Looks 上的那些好看的东西其实是从来不被承认的. 这个事情一直处于争论不休的状态, 但在最近变的更加紧张. 7 月份 GNOME 的一篇博客再次论述了 GNOME 的哲学. 这篇文章里有一些有争议的部分, 例如作者直言全局主题就是一个 “broken idea”,">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-09-23T02:13:08.000Z">
+<meta property="article:modified_time" content="2024-01-03T07:46:13.913Z">
+<meta property="article:author" content="Akarat">
+<meta property="article:tag" content="GNOME">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="drama">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon-192x192.png">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>GNOME 又激怒了所有人</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- <link rel="stylesheet" href="/var/www/myblog/public/css/style.css"> -->
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://linux.akarat.xyz">Newsletter</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://thoughts.akarat.xyz">Thoughts</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/%E5%88%A9%E7%94%A8%E5%85%8D%E8%B4%B9-S3-%E8%87%AA%E5%BB%BA-Firefox-Send/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/&text=GNOME 又激怒了所有人"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/&title=GNOME 又激怒了所有人"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/&is_video=false&description=GNOME 又激怒了所有人"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=GNOME 又激怒了所有人&body=Check out this article: https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/&title=GNOME 又激怒了所有人"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/&title=GNOME 又激怒了所有人"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/&title=GNOME 又激怒了所有人"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/&title=GNOME 又激怒了所有人"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/&name=GNOME 又激怒了所有人&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8B%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">事件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%AF%E7%A4%BA"><span class="toc-number">3.</span> <span class="toc-text">启示</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        GNOME 又激怒了所有人
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Tristram</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2021-09-23T02:13:08.000Z" itemprop="datePublished">2021-09-23</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/GNOME/" rel="tag">GNOME</a>, <a class="tag-link-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="tag-link-link" href="/tags/drama/" rel="tag">drama</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="背景">背景</h2>
+<p>如果你以前关注 Linux Desktop, 你可能知道 GNOME 早在几年前就联名公开信呼吁社区<a target="_blank" rel="noopener" href="https://stopthemingmy.app/">不要搞主题</a>. <a href="gnome-look.org/">Gnome-Looks</a> 上的那些好看的东西其实是从来不被承认的. 这个事情一直处于争论不休的状态, 但在最近变的更加紧张.</p>
+<p>7 月份 GNOME 的<a target="_blank" rel="noopener" href="https://blogs.gnome.org/tbernard/2021/07/13/community-power-4/">一篇博客</a>再次论述了 GNOME 的哲学. 这篇文章里有一些有争议的部分, 例如作者直言全局主题就是一个 “broken idea”, 而且他后面说的更有意思: <strong>如果你不喜欢你应用的外观, 你应该直接去给它们贡献代码.</strong> 作为一个简中使用者, 我只能说这句话 sounds familiar. 作者又说 Win95 时代的 UI 设计已经死了, 应该用更好的设计去取代任务栏和状态栏(Which is?). 他说每一个可配置项都是有代价的, 应该尽可能避免配置项并解决它底层的问题. 这话听上去很合理, 但作为用户我们知道, 很多时候 GNOME 显然在并没有解决问题的情况下就收回了用户的选择权. 今天几乎每个 GNOME 使用者装完系统第一件事, 就是去安装一个第三方状态栏.</p>
+<p>这些听上去很合理实则经不起推敲的东西我个人以及我相信很多人都并不买账(这也是 MATE/Cinnamon 等一干 GNOME2 余孽存在的原因), 但说到底都是个人选择. 真正造成问题的是他们对待用户的这种高傲的态度, 以及在没有解决底层问题之前就收回了选择权.</p>
+<h2 id="事件">事件</h2>
+<p>9 月 1 日, System76 的 Pop!_OS 开发者在推特上抱怨 <a target="_blank" rel="noopener" href="https://twitter.com/jeremy_soller/status/1433085221994258435">GTK4 的暗黑模式无法跟随系统全局样式表</a>, 并<a target="_blank" rel="noopener" href="https://twitter.com/jeremy_soller/status/1433088460655452162">提醒</a> GNOME 团队应该了解, Pop!_OS/Ubuntu 以及其他发行版 <strong>不会因为你不提供 API 就停止修改主题</strong>. 两天后 Jeremy 和 GNOME 开发者 Alexander Mikhaylenko 进行了一连串关于主题样式的<a target="_blank" rel="noopener" href="https://twitter.com/jeremy_soller/status/1433487714926698498">争论</a>. 谁知 GNOME 彻底跟 Jeremy 掰了, 驳回了他关于 Recoloring API 的<a target="_blank" rel="noopener" href="https://gitlab.gnome.org/GNOME/libadwaita/-/merge_requests/232">提交</a>, 并且 Alexander 在回复中将他在推特上的言辞视为威胁和 “flamebait”, 要求 Jeremy 道歉, 称在道歉之前不会与 System76 的雇员有更多交互. 现在 Jeremy 在 GNOME gitlab 的用户已经处于删除状态.</p>
+<p>Jeremy 这番炮轰并非毫无来由, Yaru 和 Feren OS 的开发者都曾私下同他抱怨过 GNOME/GTK 团队非常难以合作. 笔者在 Fedora 上也早就发现 GTK4 应用如 GNOME Extension 不会跟随系统转为暗黑模式. 而且 Jeremy 早在多年前的一个提交中就讨论过这个问题. GNOME 在 18 日的博客中<a target="_blank" rel="noopener" href="https://blogs.gnome.org/alatiera/2021/09/18/the-truth-they-are-not-telling-you-about-themes/">从他们的视角概括这次事件</a>, 更多关于 GTK4/libadwaita 这里不再深入, 这篇文章评论里反对的观点也被他们删除干净. 但即便从他们的文章中也很明确的说明了, 在 libwaita 1.0 (尚未发布) 发布之前, 不会有全局主题支持, 而他们的解决方式, 即所谓的 Coloring API 最快也会在 libwaita 2.0 中出现.</p>
+<p>所以我可以简单的用一个结论来概括: 他们在解决底层问题之前就拿走了你的选择权. 以前是对用户, 现在是对开发者. GNOME 说开发者有选择, 不喜欢 libadwaita 和 GNOME HIG 大可以不用; 但问题在于 <strong>GTK 是一个 ToolKit</strong>, 在 Toolkit 中硬编码是给开发者制造障碍.</p>
+<p>其后就是整个社区的反弹. Solus/Budgie 的开发者 Joshua 一篇长文表达了对 GNOME/GTK 无论是技术还是人的角度充满失望, 宣布要在 Budgie 11 中<a target="_blank" rel="noopener" href="https://joshuastrobl.com/2021/09/14/building-an-alternative-ecosystem/">舍弃 GTK</a>. Feren OS 也一篇长文表示<a target="_blank" rel="noopener" href="https://medium.com/feren-os/the-future-of-feren-os-theming-for-gtk-94051a64e6de">道不同不相为谋</a>. Inkscape 开发者在 Youtube 上评论 <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=IFGXVN9dZ8U">GNOME 已经不是一个自由软件社区</a>. 他们的观点都值得一看.</p>
+<p>以上大体是这次事件值得关注的部分. 很多 Twitter 上一些 GNOME fanboy 的一些人身攻击和无端指责这里都没有也没必要聊, 以及虽然 Elementary/Pantheon 开发者力挺 GNOME, 但他本人就是 GNOME 基金会成员, 所以抛开这些, 我认为此次事件大体上可以看作 GNOME vs 整个社区. 如果你认为我有偏见, 可以告诉我还有谁站在 GNOME 这边.</p>
+<h2 id="启示">启示</h2>
+<p>高傲, 难以沟通, 一意孤行. GNOME 显然对自己在人机交互、设计方面非常自信, 但也使得他们丝毫听不进社区的意见. 显然在 GNOME 眼中, 普通用户乃至一般的贡献者, 是没有发言权的. 如果你不同意他们的设计就不要用. 健康的开源项目离不开用户的反馈和新鲜血液的贡献, 但这都不是 GNOME 想要的. 今天的 GNOME 更像一个 Linux 世界中的 Windows 或 iOS, 设计的初衷就是用户不知道什么是好的设计, 也不应该有过多选择. 这种运作方式或许适合商业公司, 但拿来运作开源项目, 甚至去主导 GTK 这样被大量使用的上游项目, 是非常有问题的.</p>
+<p>但弃用 GTK 也会有诸多问题. 推特上有很多人在声援时都推荐 KDE Plasma <s>还有人问 Xfce… 还是省省吧</s>, Jeremy 也确实在推上问除 KDE 外有无使用 Kwin 的成功项目. 但从 Joshua 的博文可以看出, 大多 GTK 开发者都是 C 语言出身, 他们比起 Qt/C++ 还是更倾向 C/Rust. 另外 Qt 背后总归是商业公司, 很多人会有顾虑. 而且现在 GTK/Qt 割据的状况已经造成 Linux 桌面生态的很多麻烦, 即便假设其他发行版合力引入新的 Toolkit, 碎片化会成为将来的一个问题.</p>
+<p>总而言之, 与主流操作系统不同, 选择 Linux 本身就隐含着一个指向: <strong>我们知道自己在做什么</strong>. 我们不是任由商业公司玩弄的羊群, 而是能够学习和训练自我掌握高阶技能的 power user. 有多少 Linux 玩家不会使用终端? 事实上, 看看类似 i3/Sway 这类 Tiling Window System 重新受到的关注, 看看 wlroots 衍生出的<a target="_blank" rel="noopener" href="https://wiki.archlinux.org/title/Wayland">各种神奇项目</a>(复活了 Plan9 桌面的 wio, 不知道什么鬼的 wayfire…), 社区中激发的种种创意和激情, 都印证了这一点. 用精英主义的态度去对待这样的用户群体是无济于事的.</p>
+<p>虽然笔者有自己的观点, 但我个人认为本文总体仍以事实为主(<s>但是说真的 Xfce 还是省省吧</s>), 并且都附有相关链接, 各位可以自行评判.</p>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://linux.akarat.xyz">Newsletter</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://thoughts.akarat.xyz">Thoughts</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8B%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">事件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%AF%E7%A4%BA"><span class="toc-number">3.</span> <span class="toc-text">启示</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/&text=GNOME 又激怒了所有人"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/&title=GNOME 又激怒了所有人"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/&is_video=false&description=GNOME 又激怒了所有人"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=GNOME 又激怒了所有人&body=Check out this article: https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/&title=GNOME 又激怒了所有人"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/&title=GNOME 又激怒了所有人"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/&title=GNOME 又激怒了所有人"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/&title=GNOME 又激怒了所有人"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://akarat.xyz/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/&name=GNOME 又激怒了所有人&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2024 Akarat
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://linux.akarat.xyz">Newsletter</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://thoughts.akarat.xyz">Thoughts</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+
+
+<!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- Google Analytics -->
+
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-128594966-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+<!-- Disqus Comments -->
+
+

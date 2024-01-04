@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="LastPass 宣布移动端或网页端只支持一种设备以后, 我换到了 BitWarden. 有一些不如意的地方, 但不重要. 我最近心血来潮, 想看看以前尝试过的 KeePass 做的怎样. 我在寻找 Firefox 插件的时候发现了 Tusk, 一款 Vue 写的插件. 这款插件已经停止维护了, 我看到作者在 README 中写道:  Why is it unsuppored? Because I">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用 HashiCorp Vault 代替在线密码管理器">
+<meta property="og:url" content="https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/index.html">
+<meta property="og:site_name" content="Tristram">
+<meta property="og:description" content="LastPass 宣布移动端或网页端只支持一种设备以后, 我换到了 BitWarden. 有一些不如意的地方, 但不重要. 我最近心血来潮, 想看看以前尝试过的 KeePass 做的怎样. 我在寻找 Firefox 插件的时候发现了 Tusk, 一款 Vue 写的插件. 这款插件已经停止维护了, 我看到作者在 README 中写道:  Why is it unsuppored? Because I">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-08-05T12:59:22.000Z">
+<meta property="article:modified_time" content="2024-01-03T07:46:13.928Z">
+<meta property="article:author" content="Akarat">
+<meta property="article:tag" content="terminal">
+<meta property="article:tag" content="vault">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon-192x192.png">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>用 HashiCorp Vault 代替在线密码管理器</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- <link rel="stylesheet" href="/var/www/myblog/public/css/style.css"> -->
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://linux.akarat.xyz">Newsletter</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://thoughts.akarat.xyz">Thoughts</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/GNOME-%E5%8F%88%E6%BF%80%E6%80%92%E4%BA%86%E6%89%80%E6%9C%89%E4%BA%BA/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="/I-just-beat-bandit/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/&text=用 HashiCorp Vault 代替在线密码管理器"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/&title=用 HashiCorp Vault 代替在线密码管理器"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/&is_video=false&description=用 HashiCorp Vault 代替在线密码管理器"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=用 HashiCorp Vault 代替在线密码管理器&body=Check out this article: https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/&title=用 HashiCorp Vault 代替在线密码管理器"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/&title=用 HashiCorp Vault 代替在线密码管理器"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/&title=用 HashiCorp Vault 代替在线密码管理器"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/&title=用 HashiCorp Vault 代替在线密码管理器"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/&name=用 HashiCorp Vault 代替在线密码管理器&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-vaultPass-%E5%A4%A7%E8%87%B4%E6%B5%81%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">使用 vaultPass 大致流程:</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        用 HashiCorp Vault 代替在线密码管理器
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Tristram</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2021-08-05T12:59:22.000Z" itemprop="datePublished">2021-08-05</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/terminal/" rel="tag">terminal</a>, <a class="tag-link-link" href="/tags/vault/" rel="tag">vault</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>LastPass 宣布移动端或网页端只支持一种设备以后, 我换到了 BitWarden. 有一些不如意的地方, 但不重要. 我最近心血来潮, 想看看以前尝试过的 KeePass 做的怎样. 我在寻找 Firefox 插件的时候发现了 <a target="_blank" rel="noopener" href="https://github.com/subdavis/Tusk">Tusk</a>, 一款 Vue 写的插件. 这款插件已经停止维护了, 我看到作者在 README 中写道:</p>
+<blockquote>
+<p><strong>Why is it unsuppored?</strong> Because I no longer prefer the keepass ecosystem.  I believe version control and data sync should be a core feature of any password manager.</p>
+</blockquote>
+<p>然后他说自己已经切换到 <a target="_blank" rel="noopener" href="https://www.passwordstore.org/">pass</a>. 一个自称符合 Unix 哲学的密码管理器.<br>
+我不清楚这款产品怎样, 但我一想, 虽然是一个团队级协作的产品, 但 Vault 其实非常符合他说的, 有版本控制, 有 cli, 锦上添花的是它还支持保存你的云 Credential, 你的 ssh-key, 你的证书, 你的数据库密码……堪称运维福音. 我搜了搜 github, 万万没想到还真有人做了 <a target="_blank" rel="noopener" href="https://github.com/mulbc/vaultPass/">vaultPass</a> 这个浏览器插件. 与其去研究什么 pass, 我还不如直接给自己起个 vault 当密码管理器.</p>
+<h3 id="使用-vaultPass-大致流程">使用 vaultPass 大致流程:</h3>
+<p>方法很简单, 看看自己有什么方便的 <a target="_blank" rel="noopener" href="https://www.vaultproject.io/docs/configuration/storage">https://www.vaultproject.io/docs/configuration/storage</a> 在手头. 我直接去注册了一个免费的 S3 对象存储.</p>
+<p>配置也很简单, 然后随便找个免费的 Serverless 服务丢上去, 我极其喜欢 <a target="_blank" rel="noopener" href="https://fly.io/">https://fly.io/</a>, 可惜他们没邀请活动之类的, 不然我天天帮他们打广告.</p>
+<p>vault 起来以后, 需要建一个名为 secret 的 kv 存储.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vault secrets enable -path=secret kv-v2</span><br></pre></td></tr></table></figure>
+<p>然后启用 LDAP 或用户名密码登录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vault auth enable userpass</span><br></pre></td></tr></table></figure>
+<p>然后把 bitwarden 导出的 json 转成我们想要的格式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat bitwarden_export_20210805144230.json | jq -rc &quot;.items | .[] | select(.login.password != null) | .name, &#123;title: .name, username: .login.username, password: .login.password, comment: .login.uris[0].uri&#125;&quot; &gt; vault-compatible.jsonl</span><br></pre></td></tr></table></figure>
+<p>然后导入 vault</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat vault-compatible.jsonl | sed &#x27;s/&quot;/\\&quot;/g&#x27; | xargs -n2 zsh -c &#x27;vault kv patch secret/vaultPass/bohr/$0 @&lt;(echo $1)&#x27;</span><br></pre></td></tr></table></figure>
+<p>然后插件里填上部署的 vault 的域名, 用户名密码, 就完事了! 它似乎是根据 kv 文件名去检测域名. 都是在线获取所以需要网速好, 自动填充,<br>
+复制粘贴用户名密码都能正常使用. 不能自动识别和保存密码, 需要手动在终端 put 密码.</p>
+<p>但不重要, 重要的是可以有条理的存各种 secret 各种 key, 甚至支持阿里云 RAM 那些玩意, 更重要的是很酷, 不走寻常路.</p>
+<p>手机端只能希望哪位移动端大佬做了. 暂时别想了.</p>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://linux.akarat.xyz">Newsletter</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://thoughts.akarat.xyz">Thoughts</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-vaultPass-%E5%A4%A7%E8%87%B4%E6%B5%81%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">使用 vaultPass 大致流程:</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/&text=用 HashiCorp Vault 代替在线密码管理器"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/&title=用 HashiCorp Vault 代替在线密码管理器"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/&is_video=false&description=用 HashiCorp Vault 代替在线密码管理器"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=用 HashiCorp Vault 代替在线密码管理器&body=Check out this article: https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/&title=用 HashiCorp Vault 代替在线密码管理器"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/&title=用 HashiCorp Vault 代替在线密码管理器"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/&title=用 HashiCorp Vault 代替在线密码管理器"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/&title=用 HashiCorp Vault 代替在线密码管理器"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://akarat.xyz/%E7%94%A8-HashiCorp-Vault-%E4%BB%A3%E6%9B%BF%E5%9C%A8%E7%BA%BF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86%E5%99%A8/&name=用 HashiCorp Vault 代替在线密码管理器&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2024 Akarat
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://linux.akarat.xyz">Newsletter</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://thoughts.akarat.xyz">Thoughts</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+
+
+<!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- Google Analytics -->
+
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-128594966-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+<!-- Disqus Comments -->
+
+
