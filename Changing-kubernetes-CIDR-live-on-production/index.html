@@ -14,7 +14,7 @@
 <meta property="og:description" content="Context: The conflict with Tailscale’s CIDR kOps-managed clusters use 100.64.0.0&#x2F;13 as the default Service CIDR and 100.96.0.0&#x2F;11 as the default Cluster CIDR (PodCIDR), while Tailscale assigns address">
 <meta property="og:locale">
 <meta property="article:published_time" content="2024-11-21T09:12:45.000Z">
-<meta property="article:modified_time" content="2024-11-21T10:26:17.386Z">
+<meta property="article:modified_time" content="2024-11-21T10:32:09.888Z">
 <meta property="article:author" content="Akarat">
 <meta name="twitter:card" content="summary">
     
@@ -135,15 +135,15 @@
 
   <div class="content" itemprop="articleBody">
     <h2 id="Context-The-conflict-with-Tailscale’s-CIDR">Context: The conflict with Tailscale’s CIDR</h2>
-<p>kOps-managed clusters use 100.64.0.0/13 as the default Service CIDR and 100.96.0.0/11 as the default Cluster CIDR (PodCIDR), while Tailscale assigns addresses in the 100.64.0.0/10 range, spanning from 100.64.0.0 to 100.127.255.255. This creates an overlap between Tailscale’s subnet and kOps’ default CIDRs, leading to conflicts.</p>
-<p>Tragically we have to, or I should say it was too late to find that we can’t connect an essential service from our kops cluster through tailscale. Well to look at it optimisticly, the benefits also includes easier connectivity to our other Tailscale services, the ability to expose more internal Kubernetes services like the observability stack, and improved Kubernetes access control by eliminating the need for bastion hosts.</p>
+<p>kOps-managed clusters use <code>100.64.0.0/13</code> as the default Service CIDR and <code>100.96.0.0/11</code> as the default Cluster CIDR (PodCIDR), while Tailscale assigns addresses in the <code>100.64.0.0/10</code> range, spanning from 100.64.0.0 to 100.127.255.255. This creates an overlap between Tailscale’s subnet and kOps’ default CIDRs.</p>
+<p>Tragically we have to, or I should say it was too late to find that we can’t connect an essential service from our kops cluster through tailscale. So we have to migrate both podCIDR and serviceCIDR to other CIDRs. Well to look at it optimisticly, the benefits also includes easier connectivity to our other Tailscale services, the ability to expose more internal Kubernetes services like the observability stack, and improved Kubernetes access control by eliminating the need for bastion hosts.</p>
 <h2 id="Concepts">Concepts</h2>
 <h4 id="Service-IP">Service IP</h4>
 <p>It’s a Virtual IP allocated by kube-apiserver. <code>kube-proxy</code> on each nodes (if using kube-proxy) then defined iptable rules for this virtual IP.<br>
 Some well-known service IPs:<br>
-kube-apiserver: kubernetes.default.svc.cluster.local ( x.x.0.1)<br>
-kube-dns.kube-system.svc.cluster.local (x.x.0.10)</p>
-<p>Example: a set of rules from service foo-bar (172.24.121.68) redirected to pods (172.18.244.100/172.18.249.115)</p>
+kube-apiserver: <code>kubernetes.default.svc.cluster.local</code> ( x.x.0.1)<br>
+kube-dns: <code>kube-dns.kube-system.svc.cluster.local</code> (x.x.0.10)</p>
+<p>Example: a set of rules from service foo-bar (172.24.121.68) redirected to pods (<code>172.18.244.100/172</code>.18.249.115)</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-A KUBE-SERVICES -d 172.24.121.68/32 -p tcp -m comment --comment &quot;example-ns/foo-bar:app cluster IP&quot; -m tcp --dport 4000 -j KUBE-SVC-WWWWWWWWWW</span><br><span class="line"></span><br><span class="line">-A KUBE-SVC-WWWWWWWWWW ! -s 172.16.0.0/13 -d 172.24.121.68/32 -p tcp -m comment --comment &quot;example-ns/foo-bar:app cluster IP&quot; -m tcp --dport 4000 -j KUBE-MARK-MASQ</span><br><span class="line"></span><br><span class="line">-A KUBE-SVC-WWWWWWWWWW -m comment --comment &quot;example-ns/foo-bar:app -&gt; 172.18.244.100:4000&quot; -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-XXXXXXXXX</span><br><span class="line"></span><br><span class="line">-A KUBE-SVC-WWWWWWWWWW -m comment --comment &quot;example-ns/foo-bar:app -&gt; 172.18.249.115:4000&quot; -j KUBE-SEP-YYYYYYYYY</span><br></pre></td></tr></table></figure>
 <h4 id="Pod-IP">Pod IP</h4>
 <p>An actual IP of a network interface attached to a pod, assigned by IPAM (IP address management) component. It’s implemented by CNI to overcome inter-node communication by routing/tunneling/……anything without NAT.</p>
@@ -154,7 +154,7 @@ kube-dns.kube-system.svc.cluster.local (x.x.0.10)</p>
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">kubeAPIServer:</span><br><span class="line">    featureGates:</span><br><span class="line">  	MultiCIDRServiceAllocator: &quot;true&quot;</span><br><span class="line">    runtimeConfig:</span><br><span class="line">  	networking.k8s.io/v1alpha1: &quot;true&quot;</span><br><span class="line">kubelet:</span><br><span class="line">    featureGates:</span><br><span class="line">  	MultiCIDRServiceAllocator: &quot;true&quot;</span><br></pre></td></tr></table></figure>
 <ul>
-<li>Then we’ll use kops to change <code>serviceCIDR</code> from 100.64.0.0/13 to 172.24.0.0/15</li>
+<li>Then we’ll use kops to change <code>serviceCIDR</code> from <code>100.64.0.0/13</code> to <code>172.24.0.0/15</code></li>
 <li>Recreate all <code>ClusterIP</code> services after master rolling finished (recreate kube-api &amp; dns services first)</li>
 </ul>
 <h3 id="Hints-Tips">Hints &amp; Tips:</h3>
@@ -181,13 +181,13 @@ kube-dns.kube-system.svc.cluster.local (x.x.0.10)</p>
 <p>Before rolling updates, scaling up CoreDNS and pod-identity-webhook is essential to handle potential inter-node connectivity issues.</p>
 <h4 id="Steps">Steps:</h4>
 <ul>
-<li>Create an IPPool of 172.16.0.0/13</li>
-<li>Disable default IPPool 100.96.0.0/11</li>
-<li>Rolling restart all workloads to have PodIP in 172.16.0.0/13</li>
+<li>Create an IPPool of <code>172.16.0.0/13</code></li>
+<li>Disable default IPPool <code>100.96.0.0/11</code></li>
+<li>Rolling restart all workloads to have PodIP in <code>172.16.0.0/13</code></li>
 <li>Change kops config and rolling restart:
 <ul>
-<li><code>nonMasqueradeCIDR</code> from 100.64.0.0/10 to 172.16.0.0/12</li>
-<li><code>podCIDR</code> from 100.96.0.0/11 to 172.16.0.0/13</li>
+<li><code>nonMasqueradeCIDR</code> from <code>100.64.0.0/10</code> to <code>172.16.0.0/12</code></li>
+<li><code>podCIDR</code> from <code>100.96.0.0/11</code> to <code>172.16.0.0/13</code></li>
 <li>Disable kube-controller-manage IPAM <code>allocateNodeCIDRs: false</code> (kOps cluster), otherwise kube-controller-manager will refuse to start</li>
 </ul>
 </li>
