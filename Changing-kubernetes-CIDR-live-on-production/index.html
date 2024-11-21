@@ -14,7 +14,7 @@
 <meta property="og:description" content="Context: The conflict with Tailscale’s CIDR kOps-managed clusters use 100.64.0.0&#x2F;13 as the default Service CIDR and 100.96.0.0&#x2F;11 as the default Cluster CIDR (PodCIDR), while Tailscale assigns address">
 <meta property="og:locale">
 <meta property="article:published_time" content="2024-11-21T09:12:45.000Z">
-<meta property="article:modified_time" content="2024-11-21T10:17:11.387Z">
+<meta property="article:modified_time" content="2024-11-21T10:26:17.386Z">
 <meta property="article:author" content="Akarat">
 <meta name="twitter:card" content="summary">
     
@@ -135,8 +135,8 @@
 
   <div class="content" itemprop="articleBody">
     <h2 id="Context-The-conflict-with-Tailscale’s-CIDR">Context: The conflict with Tailscale’s CIDR</h2>
-<p>kOps-managed clusters use 100.64.0.0/13 as the default Service CIDR and 100.96.0.0/11 as the default Cluster CIDR (PodCIDR), while Tailscale assigns addresses in the 100.64.0.0/10 range, spanning from 100.64.0.0 to 100.127.255.255. This creates an overlap between Tailscale’s subnet and kOps’ default CIDRs, leading to potential conflicts.</p>
-<p>The benefits include easier connectivity to Tailscale services, the ability to expose more internal Kubernetes services like the observability stack, and improved Kubernetes access control by eliminating the need for bastion hosts.</p>
+<p>kOps-managed clusters use 100.64.0.0/13 as the default Service CIDR and 100.96.0.0/11 as the default Cluster CIDR (PodCIDR), while Tailscale assigns addresses in the 100.64.0.0/10 range, spanning from 100.64.0.0 to 100.127.255.255. This creates an overlap between Tailscale’s subnet and kOps’ default CIDRs, leading to conflicts.</p>
+<p>Tragically we have to, or I should say it was too late to find that we can’t connect an essential service from our kops cluster through tailscale. Well to look at it optimisticly, the benefits also includes easier connectivity to our other Tailscale services, the ability to expose more internal Kubernetes services like the observability stack, and improved Kubernetes access control by eliminating the need for bastion hosts.</p>
 <h2 id="Concepts">Concepts</h2>
 <h4 id="Service-IP">Service IP</h4>
 <p>It’s a Virtual IP allocated by kube-apiserver. <code>kube-proxy</code> on each nodes (if using kube-proxy) then defined iptable rules for this virtual IP.<br>
